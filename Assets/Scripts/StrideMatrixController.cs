@@ -17,6 +17,8 @@ public class StrideMatrixController : MonoBehaviour {
 
 	private bool _isDragging = false;
 
+	public bool canDrag = true;
+
 	public GameObject[] attachedMatrices;
 
 	// Use this for initialization
@@ -30,7 +32,7 @@ public class StrideMatrixController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (IsHand (other)) {
+		if (canDrag && IsHand (other)) {
 			_isDragging = true;
 //			GameObject.FindGameObjectWithTag ("GameController").gameObject.GetComponent<ConvolutionAnimationController> ().stopAnimating();
 //			GameObject.FindGameObjectWithTag ("GameController").gameObject.GetComponent<ConvolutionAnimationController> ().resetAnimation ();
@@ -38,7 +40,7 @@ public class StrideMatrixController : MonoBehaviour {
 	}
 
 	void OnTriggerStay(Collider other) {
-		if (IsHand (other)) {
+		if (canDrag && IsHand (other)) {
 			//get position of hand
 			//move stride to quanitized position, closest to hand position
 			Vector3 handPosition = other.gameObject.transform.position;
@@ -80,7 +82,7 @@ public class StrideMatrixController : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider other) {
-		if (IsHand (other)) {
+		if (canDrag && IsHand (other)) {
 //			GameObject.FindGameObjectWithTag ("GameController").gameObject.GetComponent<ConvolutionAnimationController> ().startAnimating();
 		}
 	}

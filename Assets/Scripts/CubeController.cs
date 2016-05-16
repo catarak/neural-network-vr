@@ -23,8 +23,8 @@ public class CubeController : MonoBehaviour {
 					GameObject instance = Instantiate (ValueLabel, transform.position, transform.rotation) as GameObject;
 					instance.name = "ValueLabel";
 					instance.transform.parent = transform;
-//				instance.transform.localRotation = Quaternion.Euler (90, 0, 0);
-					instance.transform.localPosition = new Vector3 (0f, 0f, -0.52f);
+					instance.transform.localRotation = Quaternion.Euler (0, 180, 0);
+					instance.transform.localPosition = new Vector3 (0f, 0f, 0.52f);
 					instance.GetComponent<TextMesh> ().text = value.ToString ("0.00");
 				}
 			}

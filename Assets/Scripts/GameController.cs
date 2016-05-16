@@ -300,6 +300,8 @@ public class GameController : MonoBehaviour {
 
 		cubesObject.transform.GetChild (0).gameObject.SetActive (true);
 
+		clearInputValueLabels ();
+
 //		nextState ();
 	}
 		
@@ -329,17 +331,18 @@ public class GameController : MonoBehaviour {
 			StartCoroutine(postNumber(drawer.GetComponent<FingerPaint>().numberMatrix));
 			drawer.SetActive (false);
 			layers [0].SetActive (true);
+			layers [0].transform.localRotation = Quaternion.Euler (0, 180, 0);
 		} else if (gameState == GameState.Conv1) {
 			//set all children of the cubes of input to be inactive
 			layers [0].transform.localRotation = Quaternion.Euler (0, -90, 0);
 			layers [0].transform.localPosition = new Vector3 (-0.6f, 0.1f, -0.6f);
 
 			layers [1].SetActive (true);
-			layers [1].transform.localRotation = Quaternion.Euler (0, 90, 0);
+			layers [1].transform.localRotation = Quaternion.Euler (0, -90, 0);
 			layers [1].transform.localPosition = new Vector3 (0.6f, 0f, -0.6f);
 
-			filters [0].transform.localPosition = new Vector3 (0.5f, 0f, -0.6f);
-			filters [0].transform.localRotation = Quaternion.Euler (0, 90, 0);
+			filters [0].transform.localPosition = new Vector3 (0.1f, 0f, -0.6f);
+			filters [0].transform.localRotation = Quaternion.Euler (0, -90, 0);
 			filters [0].SetActive (true);
 
 			for (int i = 0; i < 6; i++) {
@@ -358,10 +361,12 @@ public class GameController : MonoBehaviour {
 
 				smallStrideMatrix.transform.localPosition = new Vector3 (1.33f - 0.64f * i, 0.27f, 0);
 				smallStrideMatrix.transform.localRotation = Quaternion.identity;
+				smallStrideMatrix.GetComponent<StrideMatrixController> ().canDrag = false;
 			}
 
 			strideMatrix.GetComponent<StrideMatrixController> ().attachedMatrices = GameObject.FindGameObjectsWithTag ("smallStrideMatrix");
-				
+
+			clearInputValueLabels ();
 			GetComponent<ConvolutionAnimationController> ().startAnimating ();
 
 		} else if (gameState == GameState.Down1) {
@@ -406,6 +411,7 @@ public class GameController : MonoBehaviour {
 				smallStrideMatrix.transform.localRotation = Quaternion.identity;
 				smallStrideMatrix.GetComponent<StrideMatrixController> ()._strideRange = 0.26f;
 				smallStrideMatrix.GetComponent<StrideMatrixController> ().setInitialPosition (new Vector3 (1.47f - 0.64f * i, 0.13f, 0f));
+				smallStrideMatrix.GetComponent<StrideMatrixController> ().canDrag = false;
 				newSmallStrideMatrices [i] = smallStrideMatrix;
 			}
 				
@@ -464,6 +470,7 @@ public class GameController : MonoBehaviour {
 
 				smallStrideMatrix.GetComponent<StrideMatrixController> ()._strideRange = 0.18f;
 				smallStrideMatrix.GetComponent<StrideMatrixController> ().setInitialPosition (new Vector3 (2.01f - 0.28f * i, 0.09f, 0));
+				smallStrideMatrix.GetComponent<StrideMatrixController> ().canDrag = false;
 				newSmallStrideMatrices [i] = smallStrideMatrix;
 			}
 
@@ -543,6 +550,7 @@ public class GameController : MonoBehaviour {
 				smallStrideMatrix.transform.localRotation = Quaternion.identity;
 				smallStrideMatrix.GetComponent<StrideMatrixController> ()._strideRange = 0.08f;
 				smallStrideMatrix.GetComponent<StrideMatrixController> ().setInitialPosition (new Vector3 (2.06f - 0.28f * i, 0.04f, 0f));
+				smallStrideMatrix.GetComponent<StrideMatrixController> ().canDrag = false;
 				newSmallStrideMatrices [i] = smallStrideMatrix;
 			}
 
@@ -566,6 +574,7 @@ public class GameController : MonoBehaviour {
 			GameObject[] smallStrideMatrices = GameObject.FindGameObjectsWithTag ("smallStrideMatrix");
 			for (int i = 0; i < smallStrideMatrices.Length; i++) {
 				smallStrideMatrices [i].GetComponent<StrideMatrixController> ().attachedMatrices = smallStrideMatrices;
+				smallStrideMatrices [i].GetComponent<StrideMatrixController> ().canDrag = true;
 			}
 
 			downsamplePlane.SetActive (false);
@@ -654,7 +663,7 @@ public class GameController : MonoBehaviour {
 
 			layers [0].SetActive (true);
 			layers [0].transform.localPosition = Vector3.zero;
-			layers [0].transform.localRotation = Quaternion.identity;
+			layers [0].transform.localRotation = Quaternion.Euler (0, 180, 0);
 			layers [1].SetActive (true);
 
 			layers [1].transform.localPosition = new Vector3(-0.1f, 0, 0.7f);
@@ -732,5 +741,14 @@ public class GameController : MonoBehaviour {
 		yield return new WaitForSeconds (2);
 		GetComponent<AudioSource> ().clip = audioClips [audioIndex];
 		GetComponent<AudioSource> ().Play ();
+	}
+
+	public void clearInputValueLabels() {
+		int numChildren = 1024;
+		for (int i = 0; i < numChildren; i++) {
+			if (layers [0].transform.GetChild (i).childCount > 0) {
+				Destroy (layers [0].transform.GetChild (i).GetChild (0).gameObject);
+			}
+		}
 	}
 }

@@ -34,6 +34,8 @@ public class FingerPaint : MonoBehaviour
 	public float[] numberMatrix;
 	public bool numberMatrixInitialized = false;
 
+	private int _drawingHandIndex = -1;
+
 
     // Use this for initialization
     void Awake()
@@ -56,7 +58,7 @@ public class FingerPaint : MonoBehaviour
 		Dictionary<int, HandRepresentation> graphicsHands = leapHandController.graphicsReps;
 		Dictionary<int, HandRepresentation> physicsHands = leapHandController.physicsReps;
 
-		if (graphicsHands.Count != 1) return;
+		if (graphicsHands.Count == 0) return;
 
 		//instead of getting just one hand here... check both
 		//want to trigger with one hand, draw with the other, and not flip them in the middle
@@ -66,12 +68,36 @@ public class FingerPaint : MonoBehaviour
 
 
 //		Debug.Log ((new List<HandRepresentation>(leapHandController.graphicsReps.Values))[0]);
-		HandProxy handProxy = (HandProxy) (new List<HandRepresentation>(leapHandController.graphicsReps.Values))[0];
-		Hand leapHand = handProxy.handModel.GetLeapHand ();
 
-		if (handIsTrigger (leapHand)) {
+		Hand leapHand;
+		Hand leapHand2 = new Hand ();
+		if (graphicsHands.Count == 1) {
+			HandProxy handProxy = (HandProxy)(new List<HandRepresentation> (leapHandController.graphicsReps.Values)) [0];
+			leapHand = handProxy.handModel.GetLeapHand ();
+		} else {
+			HandProxy handProxy = (HandProxy)(new List<HandRepresentation> (leapHandController.graphicsReps.Values)) [0];
+			leapHand = handProxy.handModel.GetLeapHand ();
+
+			handProxy = (HandProxy)(new List<HandRepresentation> (leapHandController.graphicsReps.Values)) [1];
+			leapHand2 = handProxy.handModel.GetLeapHand ();
+		}
+
+		if ((graphicsHands.Count == 2 && (handIsTrigger (leapHand) || handIsTrigger(leapHand2))) 
+			|| (graphicsHands.Count == 1 && handIsTrigger (leapHand))) {
+			if (!isDrawing) {
+				if (handIsTrigger (leapHand)) {
+					_drawingHandIndex = 0;
+				} else if (graphicsHands.Count == 2 && handIsTrigger(leapHand2)) {
+					_drawingHandIndex = 1;
+				}
+			}
+
+			if (_drawingHandIndex == 0) {
+				finger = leapHand.Fingers [(int)Finger.FingerType.TYPE_INDEX];
+			} else if (_drawingHandIndex == 1) {
+				finger = leapHand2.Fingers[(int)Finger.FingerType.TYPE_INDEX];
+			}
 			//draw with other hand
-			finger = leapHand.Fingers[(int)Finger.FingerType.TYPE_INDEX];
 
 			fingerTipPos = finger.TipPosition.ToVector3();
 			fingerdetect = true;
@@ -83,6 +109,7 @@ public class FingerPaint : MonoBehaviour
 		} else if (isDrawing && linePoints.Count > 30) {
 			isDrawing = false;
 			fingerdetect = false;
+			_drawingHandIndex = -1;
 			Debug.Log (linePoints.Count);
 
 //			float yRotation = centerEyeTransform.localRotation.eulerAngles.y;
@@ -214,7 +241,7 @@ public class FingerPaint : MonoBehaviour
 			for (int i = 27; i >= 0; i--) {
 				for (int j = 0; j < 28; j++) {
 //					numberMatrix [32 * (27-i) + j + 2] = canvas.GetPixel (i, j).r * 1.275f - 0.1f;
-					numberMatrix [(32 * (i + 2)) + j + 2] = canvas.GetPixel (i, j).r * 1.275f - 0.1f;
+					numberMatrix [(32 * ((27 -  i) + 2)) + j + 2] = canvas.GetPixel (i, j).r * 1.275f - 0.1f;
 				}
 			}
 
@@ -233,6 +260,7 @@ public class FingerPaint : MonoBehaviour
 		} else {
 			isDrawing = false;
 			fingerdetect = false;
+			_drawingHandIndex = -1;
 		}
 			
         if (fingerdetect)
@@ -288,7 +316,7 @@ public class FingerPaint : MonoBehaviour
 				numOtherFingersExtended += 1;
 			}
 
-			if (numOtherFingersExtended <= 1 && indexExtended) {
+			if (numOtherFingersExtended <= 3 && indexExtended) {
 				isTrigger = true;
 			}
 		} else {

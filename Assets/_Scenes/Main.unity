@@ -6938,6 +6938,7 @@ MonoBehaviour:
   centerEyeTransform: {fileID: 626323130}
   gameController: {fileID: 1514709692}
   numberMatrix: []
+  numberMatrixInitialized: 0
 --- !u!4 &2078342176
 Transform:
   m_ObjectHideFlags: 0
