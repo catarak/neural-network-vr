@@ -65,10 +65,10 @@ public class Convolution2AnimationController : MonoBehaviour {
 				if (conv2Filters.transform.GetChild (i).GetChild (j).childCount > 0) {
 					for (int k = 0; k < cubePositions.Length; k++) {
 						GameObject cube = down1Layer.transform.GetChild (j).GetChild (cubePositions [k]).gameObject;
-						GameObject cubeClone = Instantiate (cube) as GameObject;
+						GameObject cubeClone = Instantiate (cube, Vector3.zero, Quaternion.identity) as GameObject;
 						cubeClone.transform.parent = cubeAnimationObject.transform;
-						cubeClone.transform.localPosition = conv2Filters.transform.GetChild (i).GetChild (j).GetChild (k).localPosition;
-						cubeClone.transform.localRotation = conv2Filters.transform.GetChild (i).GetChild (j).GetChild (k).localRotation;
+						cubeClone.transform.localPosition = cube.transform.localPosition;
+						cubeClone.transform.localRotation = cube.transform.localRotation;
 					}
 				}
 			}
