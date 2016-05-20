@@ -19,7 +19,8 @@ public class CubeController : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (transform.parent.CompareTag ("image")) {
 			if (IsHand (other)) {
-				if (transform.Find ("ValueLabel") == null) {
+				gameController = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameController> ();
+				if (gameController.gameState == GameController.GameState.Input && transform.Find ("ValueLabel") == null) {
 					GameObject instance = Instantiate (ValueLabel, transform.position, transform.rotation) as GameObject;
 					instance.name = "ValueLabel";
 					instance.transform.parent = transform;

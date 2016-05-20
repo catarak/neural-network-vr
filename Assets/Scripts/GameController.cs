@@ -352,6 +352,7 @@ public class GameController : MonoBehaviour {
 			layers [0].SetActive (true);
 			layers [0].transform.localRotation = Quaternion.Euler (0, 180, 0);
 		} else if (gameState == GameState.Conv1) {
+			clearInputValueLabels ();
 			//set all children of the cubes of input to be inactive
 			layers [0].transform.localRotation = Quaternion.Euler (0, -90, 0);
 			layers [0].transform.localPosition = new Vector3 (-0.6f, 0.1f, -0.6f);
