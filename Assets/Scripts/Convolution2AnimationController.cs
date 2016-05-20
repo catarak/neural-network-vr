@@ -80,6 +80,7 @@ public class Convolution2AnimationController : MonoBehaviour {
 		_animatingInputCubes = true;
 		for (int i = 0; i < 16; i++) {
 			Vector3 moveToPosition = conv2Filters.transform.GetChild (i).position;
+			moveToPosition = new Vector3 (moveToPosition.x, moveToPosition.y - 0.14f, moveToPosition.z);
 			Quaternion moveToRotation = conv2Filters.transform.GetChild (i).rotation;
 
 			StartCoroutine (inputMatrices[i].GetComponent<CubeAnimationController> ().moveToPosition (moveToPosition, moveToRotation, 5f));

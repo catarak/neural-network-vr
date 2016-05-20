@@ -27,10 +27,10 @@ namespace Leap.Unity.ThumbsUpUtility {
 			didUpdate |= _thumbsUpDetectorA.DidChangeFromLastFrame;
 			didUpdate |= _thumbsUpDetectorB.DidChangeFromLastFrame;
 
-			if (Time.time - _thumbsUpDetectorB.LastThumbsUpTime > 5.0f) {
+			if (Time.time - _thumbsUpDetectorB.LastThumbsUpTime > 3.0f) {
 				_canThumbsUpAgainB = true;
 			}
-			if (Time.time - _thumbsUpDetectorA.LastThumbsUpTime > 5.0f) {
+			if (Time.time - _thumbsUpDetectorA.LastThumbsUpTime > 3.0f) {
 				_canThumbsUpAgainA = true;
 			}
 				
