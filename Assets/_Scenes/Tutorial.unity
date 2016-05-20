@@ -2518,6 +2518,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cube: {fileID: 2141886786}
   canvas: {fileID: 1913005343}
+  leapHandController: {fileID: 60573389}
+  blackSkybox: {fileID: 2100000, guid: 080b83747ead3dc41aa51aa7f81c5365, type: 2}
 --- !u!1001 &1891719206
 Prefab:
   m_ObjectHideFlags: 0

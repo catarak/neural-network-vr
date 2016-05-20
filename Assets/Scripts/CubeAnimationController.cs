@@ -3,6 +3,9 @@ using System.Collections;
 
 public class CubeAnimationController : MonoBehaviour {
 	public bool isAnimating = false;
+	public AudioClip c;
+	public AudioClip g;
+	public AudioClip c2;
 
 	void Start () {
 	
@@ -14,6 +17,7 @@ public class CubeAnimationController : MonoBehaviour {
 
 	public IEnumerator moveToPosition(Vector3 position, Quaternion rotation, float time) {
 		isAnimating = true;
+		playSound ();
 		float elapsedTime = 0.0f;
 		Vector3 startingPosition = transform.position;
 		Quaternion startingRotation = transform.rotation;
@@ -24,5 +28,9 @@ public class CubeAnimationController : MonoBehaviour {
 			yield return new WaitForEndOfFrame ();
 		}
 		isAnimating = false;
+	}
+
+	private void playSound() {
+		GetComponent<AudioSource> ().Play ();
 	}
 }

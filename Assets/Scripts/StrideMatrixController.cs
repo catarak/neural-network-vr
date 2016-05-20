@@ -78,6 +78,7 @@ public class StrideMatrixController : MonoBehaviour {
 			}
 				
 			transform.localPosition = new Vector3 (newX, newY, transform.localPosition.z);
+
 		}
 	}
 

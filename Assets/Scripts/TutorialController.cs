@@ -6,6 +6,9 @@ public class TutorialController : MonoBehaviour {
 	private bool _started = false;
 	public GameObject cube;
 	public GameObject canvas;
+	public GameObject leapHandController;
+
+	public Material blackSkybox;
 
 	void Start () {
 
@@ -13,7 +16,9 @@ public class TutorialController : MonoBehaviour {
 
 	IEnumerator WaitAndStart() {
 		yield return new WaitForSeconds (3);
-		SceneManager.LoadScene ("Main");
+		canvas.SetActive (false);
+		leapHandController.SetActive (false);
+		SceneManager.LoadScene("Main");
 	}
 
 	void Update () {

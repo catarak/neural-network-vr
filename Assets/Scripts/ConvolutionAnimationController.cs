@@ -27,6 +27,7 @@ public class ConvolutionAnimationController : MonoBehaviour {
 					destroyOutputCubes ();
 					createInputCubes ();
 					animateInputCubes ();
+//					playStartSound ();
 				}
 			}
 			//map strideMatrix positions to cube positions
@@ -42,6 +43,7 @@ public class ConvolutionAnimationController : MonoBehaviour {
 		_isAnimating = true;
 		createInputCubes ();
 		animateInputCubes ();
+//		playStartSound ();
 	}
 
 	public void stopAnimating() {
@@ -160,5 +162,11 @@ public class ConvolutionAnimationController : MonoBehaviour {
 		if (_isAnimating) {
 			startAnimating ();
 		}
+	}
+
+	private void playStartSound() {
+		GameObject strideMatrix = GameObject.FindGameObjectWithTag ("strideMatrix");
+		strideMatrix.GetComponent<AudioSource> ().Play ();
+
 	}
 }

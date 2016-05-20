@@ -39,9 +39,14 @@ public class GameController : MonoBehaviour {
 	public GameObject DownStrideMatrix;
 	public GameObject LineCylinder;
 	public GameObject FinalValueLabel;
+	public GameObject CubeLineHolder;
 
 	public AudioClip[] audioClips;
 	private int audioIndex = 0;
+
+	public AudioClip thumbsUpReminder;
+
+	private IEnumerator animateGreatestCube;
 
 	Dictionary<string, int> layerToKernelSize = new Dictionary<string, int>()
 	{
@@ -51,7 +56,7 @@ public class GameController : MonoBehaviour {
 		{"down2", 25}
 	};
 
-	void loadHiddenWeights() {
+	IEnumerator loadHiddenWeights() {
 		layers [4].transform.localRotation = Quaternion.Euler (0, -90, 0);
 		layers [4].transform.localPosition = new Vector3 (-0.6f, 0.1f, -0.5f);
 
@@ -67,8 +72,10 @@ public class GameController : MonoBehaviour {
 			kernel.name = "Kernel" + (i + 1);
 			kernel.transform.parent = lines1.transform;
 			for (int j = 0; j < 25; j++) {
-				GameObject cube = new GameObject ();
+				GameObject cube = Instantiate (CubeLineHolder, Vector3.zero, Quaternion.identity) as GameObject;
+//				GameObject cube = new GameObject ();
 				cube.name = "CubeLineHolder";
+				cube.GetComponent<AudioSource> ().spatialize = true;
 				cube.transform.parent = kernel.transform;
 				for (int k = 0; k < weightsMatrix.weights.Length; k++) {
 						GameObject line = Instantiate (LineCylinder) as GameObject;
@@ -93,13 +100,17 @@ public class GameController : MonoBehaviour {
 						}
 						line.GetComponent<MeshRenderer> ().material.color = new Color (redLookup [colorNum], greenLookup [colorNum], blueLookup [colorNum], 1.0F);
 					line.transform.parent = cube.transform;
+					if ((i * j * k + 1) % 10000 == 0) {
+						yield return new WaitForSeconds (0);
+					}
 				}
 				cube.SetActive (false);
 			}
 		}
+		StartCoroutine(loadHiddenWeights2 ());
 	}
 
-	void loadHiddenWeights2() {
+	IEnumerator loadHiddenWeights2() {
 		layers [5].transform.localRotation = Quaternion.Euler (0, -90, 0);
 		layers [5].transform.localPosition = new Vector3 (-0.6f, 0.1f, -0.5f);
 
@@ -111,9 +122,10 @@ public class GameController : MonoBehaviour {
 		WeightsMatrix weightsMatrix = WeightsMatrix.CreateFromJSON (hiddenWeights2Json);
 
 		for (int i = 0; i < 120; i++) {
-			GameObject cube = new GameObject ();
+			GameObject cube = Instantiate (CubeLineHolder, Vector3.zero, Quaternion.identity) as GameObject;
+//			GameObject cube = new GameObject ();
 			cube.name = "CubeLineHolder";
-
+			cube.GetComponent<AudioSource> ().spatialize = true;
 			cube.transform.parent = lines2.transform;
 			for (int j = 0; j < 100; j++) {
 				GameObject line = Instantiate (LineCylinder) as GameObject;
@@ -138,13 +150,18 @@ public class GameController : MonoBehaviour {
 				}
 				line.GetComponent<MeshRenderer> ().material.color = new Color (redLookup [colorNum], greenLookup [colorNum], blueLookup [colorNum], 1.0F);
 				line.transform.parent = cube.transform;
+
+				if (i * j % 1000 == 0) {
+					yield return new WaitForSeconds (0);
+				}
 			}
 			cube.SetActive (false);
 		}
 	}
 
 
-	void Start() {
+	IEnumerator Start() {
+		yield return new WaitForSeconds (0);
 		gameState = GameState.Drawing;
 		//parse all layer positions
 		TextAsset text = Resources.Load<TextAsset> ("webgl_convnet2");
@@ -160,7 +177,7 @@ public class GameController : MonoBehaviour {
 			if (!type.Equals (cubes.nodes[i].type)) {
 				type = cubes.nodes [i].type;
 				//new kernel
-				Transform layer =  GameObject.FindGameObjectWithTag (type).transform;
+				Transform layer =  layers[cubes.nodes[i].layerNum].transform;
 				int childCount = layer.childCount;
 				kernelIndex = 0;
 				kernels = new Transform[childCount];
@@ -183,10 +200,14 @@ public class GameController : MonoBehaviour {
 				}
 				instance.transform.parent = kernels [kernelIndex];
 			} else {
-				instance.transform.parent = GameObject.FindGameObjectWithTag (cubes.nodes [i].type).transform;
+				instance.transform.parent = layers[cubes.nodes[i].layerNum].transform;
 			}
 			cubesArray [i] = instance;
 			kernelNodeIndex++;
+
+			if (i % 1000 == 0) {
+				yield return new WaitForSeconds (0);
+			}
 		}
 
 		//parse filter one positions and values
@@ -195,7 +216,7 @@ public class GameController : MonoBehaviour {
 		Nodes filterOneCubes = Nodes.CreateFromJSON (filterOnePositionsJson);
 		int numFilterOneCubes = filterOneCubes.nodes.Length;
 		filterOneCubesArray = new GameObject[numFilterOneCubes];
-		Transform convFilter1 = GameObject.FindGameObjectWithTag ("convfilter1").transform;
+		Transform convFilter1 = filters[0].transform;
 		kernels = new Transform[6];
 		for (int j = 0; j < 6; j++) {
 			kernels [j] = convFilter1.GetChild (j);
@@ -218,6 +239,7 @@ public class GameController : MonoBehaviour {
 
 			kernelNodeIndex++;
 		}
+		yield return new WaitForSeconds (0);
 
 		//parse filter two positions and values
 		TextAsset filterTwoText = Resources.Load<TextAsset> ("filter2_positions");
@@ -225,7 +247,7 @@ public class GameController : MonoBehaviour {
 		Nodes filterTwoCubes = Nodes.CreateFromJSON (filterTwoPositionsJson);
 		int numFilterTwoCubes = filterTwoCubes.nodes.Length;
 		filterTwoCubesArray = new GameObject[numFilterTwoCubes];
-		Transform convFilter2 = GameObject.FindGameObjectWithTag ("convfilter2").transform;
+		Transform convFilter2 = filters[1].transform;
 		for (int i = 0; i < numFilterTwoCubes; i++) {
 //			Vector3 position = new Vector3 (filterTwoCubes.nodes [i].x/cubeScale, filterTwoCubes.nodes [i].y/cubeScale, filterTwoCubes.nodes [i].z/cubeScale);
 			Vector3 position = new Vector3 (filterTwoCubes.nodes [i].x/cubeScale, filterTwoCubes.nodes [i].z/cubeScale, 0);
@@ -242,25 +264,17 @@ public class GameController : MonoBehaviour {
 			instance.GetComponent<CubeController> ().value = filterTwoCubes.nodes [i].value;
 			filterTwoCubesArray [i] = instance;
 		}
-
-
-		for (int i = 0; i < numLayers; i++) {
-			cubesObject.transform.GetChild (i).gameObject.SetActive (false);
-		}
+		yield return new WaitForSeconds (0);
+			
 			
 		convFilter1.localRotation = Quaternion.Euler (0, 0, 180);
 		convFilter1.localPosition = new Vector3 (0, -450, 0);
 		convFilter2.localRotation = Quaternion.Euler (0, 0, 180);
 
-		filters = new GameObject[2];
-		filters [0] = convFilter1.gameObject;
-		filters [1] = convFilter2.gameObject;
-
 		convFilter1.gameObject.SetActive (false);
 		convFilter2.gameObject.SetActive (false);
 
-		loadHiddenWeights ();
-		loadHiddenWeights2 ();
+		StartCoroutine(loadHiddenWeights ());
 
 		lines1.SetActive (false);
 		lines2.SetActive (false);
@@ -286,6 +300,7 @@ public class GameController : MonoBehaviour {
 		NodeOutputs nodeOutputsWrapper = JsonUtility.FromJson<NodeOutputs>(w.text);
 		float[] nodeOutputs = nodeOutputsWrapper.nodeOutputs;
 
+		yield return new WaitForSeconds (0);
 		for (int i = 0; i < numCubes; i++) {
 			int colorNum = Mathf.RoundToInt(nodeOutputs[i]*99);
 			if (colorNum > 99) {
@@ -296,6 +311,10 @@ public class GameController : MonoBehaviour {
 			}
 			cubesArray[i].GetComponent<MeshRenderer> ().material.color = new Color (redLookup[colorNum], greenLookup[colorNum], blueLookup[colorNum], 1.0F);
 			cubesArray [i].GetComponent<CubeController> ().value = nodeOutputs [i];
+
+			if (i % 1000 == 0) {
+				yield return new WaitForSeconds (0);
+			}
 		}
 
 		cubesObject.transform.GetChild (0).gameObject.SetActive (true);
@@ -646,11 +665,12 @@ public class GameController : MonoBehaviour {
 				}
 			}
 
-			StartCoroutine (layers [7].transform.GetChild (greatestIndex).gameObject.GetComponent<CubeController> ().animateUpAndDown ());
+			animateGreatestCube = layers [7].transform.GetChild (greatestIndex).gameObject.GetComponent<CubeController> ().animateUpAndDown ();
+			StartCoroutine (animateGreatestCube);
 
 			lines2.SetActive (false);
 		} else if (gameState == GameState.Full) {
-			StopAllCoroutines ();
+			StopCoroutine (animateGreatestCube);
 			for (int i = 0; i < 10; i++) {
 				if (layers [7].transform.GetChild (i).GetComponent<CubeController> ().isAnimating) {
 					layers [7].transform.GetChild (i).GetComponent<CubeController> ().isAnimating = false;
@@ -741,6 +761,14 @@ public class GameController : MonoBehaviour {
 		yield return new WaitForSeconds (2);
 		GetComponent<AudioSource> ().clip = audioClips [audioIndex];
 		GetComponent<AudioSource> ().Play ();
+		int playingAudioIndex = audioIndex;
+		yield return new WaitForSeconds (audioClips [audioIndex].length + 15);
+		if (playingAudioIndex == audioIndex) {
+			if (audioIndex != 0 && audioIndex != 9) {
+				GetComponent<AudioSource> ().clip = thumbsUpReminder;
+				GetComponent<AudioSource> ().Play ();
+			}
+		}
 	}
 
 	public void clearInputValueLabels() {

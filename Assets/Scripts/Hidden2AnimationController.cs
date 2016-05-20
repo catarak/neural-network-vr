@@ -17,10 +17,11 @@ public class Hidden2AnimationController : MonoBehaviour {
 	}
 
 	public IEnumerator animateLines() {
-		for (int i = 0; i < 120; i++) {
+		for (int i = 119; i >= 0; i--) {
 			GameObject lines = lines2.transform.GetChild (i).gameObject;
 			lines.SetActive (true);
-			yield return new WaitForSeconds (1);
+			lines.GetComponent<AudioSource> ().Play ();
+			yield return new WaitForSeconds (2);
 			lines.SetActive (false);
 		}
 	}

@@ -35,11 +35,12 @@ public class Hidden1AnimationController : MonoBehaviour {
 					GameObject lines = lines1.transform.GetChild (i).GetChild (j).gameObject;
 					if (j == cubePosition) {
 						lines.SetActive (true);
+						lines.GetComponent<AudioSource> ().Play ();
 					} else {
 						lines.SetActive (false);
 					}
 				}
-				yield return new WaitForSeconds (1);
+				yield return new WaitForSeconds (2);
 				lines1.transform.GetChild (i).GetChild (cubePosition).gameObject.SetActive (false);
 			}
 		}
