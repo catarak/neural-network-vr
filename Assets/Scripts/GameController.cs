@@ -686,32 +686,32 @@ public class GameController : MonoBehaviour {
 			layers [0].transform.localRotation = Quaternion.Euler (0, 180, 0);
 			layers [1].SetActive (true);
 
-			layers [1].transform.localPosition = new Vector3(-0.1f, 0, 0.7f);
-			layers [1].transform.localRotation = Quaternion.Euler (0, 45, 90);
+			layers [1].transform.localPosition = new Vector3(2.0f, 0, -1.6f);
+			layers [1].transform.localRotation = Quaternion.Euler (0, 225, 90);
 			for (int i = 0; i < 6; i++) {
 				layers[1].transform.GetChild(i).transform.localRotation = Quaternion.Euler (0, 0, -90);
 				layers [1].transform.GetChild (i).transform.localPosition = new Vector3 (1.33f - 0.64f*i, -0.64f*i, 0);
 			}
 
 			layers [2].SetActive (true);
-			layers [2].transform.localPosition = new Vector3(1.3f, 0, 0.2f);
-			layers [2].transform.localRotation = Quaternion.Euler (0, 90, 90);
+			layers [2].transform.localPosition = new Vector3(1.2f, 0, -3.0f);
+			layers [2].transform.localRotation = Quaternion.Euler (0, 270, 90);
 			for (int i = 0; i < 6; i++) {
 				layers[2].transform.GetChild(i).transform.localRotation = Quaternion.Euler (0, 0, -90);
 				layers [2].transform.GetChild (i).transform.localPosition = new Vector3 (1.34f - 0.64f*i, -0.64f*i, 0);
 			}
 
 			layers [3].SetActive (true);
-			layers [3].transform.localPosition = new Vector3(2.3f, 0, -0.9f);
-			layers [3].transform.localRotation = Quaternion.Euler (0, 135, 90);
+			layers [3].transform.localPosition = new Vector3(-0.7f, 0, -3.8f);
+			layers [3].transform.localRotation = Quaternion.Euler (0, 315, 90);
 			for (int i = 0; i < 16; i++) {
 				layers[3].transform.GetChild(i).transform.localRotation = Quaternion.Euler (0, 0, -90);
 				layers [3].transform.GetChild (i).transform.localPosition = new Vector3 (2.01f - 0.28f*i, -0.28f*i, 0);
 			}
 
 			layers [4].SetActive (true);
-			layers [4].transform.localPosition = new Vector3(1.9f, 0, -2.7f);
-			layers [4].transform.localRotation = Quaternion.Euler (0, 180, 90);
+			layers [4].transform.localPosition = new Vector3(-2.5f, 0, -2.7f);
+			layers [4].transform.localRotation = Quaternion.Euler (0, 0, 90);
 			for (int i = 0; i < 16; i++) {
 				layers[4].transform.GetChild(i).transform.localRotation = Quaternion.Euler (0, 0, -90);
 				layers [4].transform.GetChild (i).transform.localPosition = new Vector3 (2.06f - 0.28f*i, -0.28f*i, 0);
