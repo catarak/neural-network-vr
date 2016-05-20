@@ -100,7 +100,7 @@ public class GameController : MonoBehaviour {
 						}
 						line.GetComponent<MeshRenderer> ().material.color = new Color (redLookup [colorNum], greenLookup [colorNum], blueLookup [colorNum], 1.0F);
 					line.transform.parent = cube.transform;
-					if ((i * j * k + 1) % 10000 == 0) {
+					if (((i+1)*(k+1)*(j+1)) % 500 == 0) {
 						yield return new WaitForSeconds (0);
 					}
 				}
@@ -151,7 +151,7 @@ public class GameController : MonoBehaviour {
 				line.GetComponent<MeshRenderer> ().material.color = new Color (redLookup [colorNum], greenLookup [colorNum], blueLookup [colorNum], 1.0F);
 				line.transform.parent = cube.transform;
 
-				if (i * j % 1000 == 0) {
+				if (((i+1) * (j+1)) % 500 == 0) {
 					yield return new WaitForSeconds (0);
 				}
 			}
